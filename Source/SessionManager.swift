@@ -117,12 +117,16 @@ open class SessionManager {
                 }()
 
                 let alamofireVersion: String = {
+                    #if os(Linux) || os(Android) || os(Windows)
+                    return "Unknown"
+                    #else
                     guard
                         let afInfo = Bundle(for: SessionManager.self).infoDictionary,
                         let build = afInfo["CFBundleShortVersionString"]
                     else { return "Unknown" }
 
                     return "Alamofire/\(build)"
+                    #endif
                 }()
 
                 return "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion)) \(alamofireVersion)"
