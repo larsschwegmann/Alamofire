@@ -29,6 +29,8 @@ import Foundation
 import MobileCoreServices
 #elseif os(macOS)
 import CoreServices
+#elseif os(Linux)
+import Glibc
 #endif
 
 /// Constructs `multipart/form-data` for uploads within an HTTP or HTTPS body. There are currently two ways to encode
@@ -57,7 +59,12 @@ open class MultipartFormData {
         }
 
         static func randomBoundary() -> String {
+            #if os(Linux) || os(Android) || os(Windows)
+            srandom(UInt32(Date().timeIntervalSince1970))
+            return String(format: "alamofire.boundary.%08x%08x", UInt32(random()), UInt32(random()))
+            #else
             return String(format: "alamofire.boundary.%08x%08x", arc4random(), arc4random())
+            #endif
         }
 
         static func boundaryData(forBoundaryType boundaryType: BoundaryType, boundary: String) -> Data {
