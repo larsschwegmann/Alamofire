@@ -275,17 +275,10 @@ open class MultipartFormData {
             return
         }
 
-        #if os(Linux) || os(Android) || os(Windows)
-            guard !isDirectory else {
-                setBodyPartError(withReason: .bodyPartFileIsDirectory(at: fileURL))
-                return
-            }
-        #else
-            guard !isDirectory.boolValue else {
-                setBodyPartError(withReason: .bodyPartFileIsDirectory(at: fileURL))
-                return
-            }
-        #endif
+        guard !isDirectory.boolValue else {
+            setBodyPartError(withReason: .bodyPartFileIsDirectory(at: fileURL))
+            return
+        }
 
         //============================================================
         //          Check 4 - can the file size be extracted?
